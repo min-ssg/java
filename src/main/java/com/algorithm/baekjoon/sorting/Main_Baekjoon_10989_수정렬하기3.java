@@ -13,6 +13,9 @@ public class Main_Baekjoon_10989_수정렬하기3 {
 
             N = Integer.parseInt(bf.readLine());
 
+            int n = 10_000_000;
+            int[] arr = new int[n * n];
+
             int[] array = new int[10_001];
 
             for (int i = 0; i < N; i++) {

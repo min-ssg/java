@@ -19,6 +19,5 @@ class Programming2_1Test {
 
         int[] ints = list.stream().mapToInt(value -> value).toArray();
 
-        System.out.println(array.length);
     }
 }

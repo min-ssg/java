@@ -22,6 +22,11 @@ public class Main_Baekjoon_15970_화살표그리기 {
         int answer = solution();
 
         System.out.println(answer);
+        exit();
+    }
+
+    private static void exit() {
+        scan.close();
     }
 
     private static void input() {

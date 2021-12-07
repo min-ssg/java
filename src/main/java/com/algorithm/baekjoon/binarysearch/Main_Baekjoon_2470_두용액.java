@@ -18,15 +18,21 @@ public class Main_Baekjoon_2470_두용액 {
     static int[] A;
 
     static StringBuilder sb = new StringBuilder();
+    static FastReader scan = new FastReader();
 
     public static void main(String[] args) {
         input();
         solution();
+        close();
+    }
+
+    private static void close() {
+
     }
 
 
     private static void input() {
-        FastReader scan = new FastReader();
+
         N = scan.nextInt();
         A = new int[N];
         for (int i = 0; i < N; i++) {
@@ -43,9 +49,9 @@ public class Main_Baekjoon_2470_두용액 {
 
         for (int left = 0; left < N; left++) {
 
-            int result = binarySearch(-A[left]);
+            int result = binarySearch(left+1, N -1 , -A[left]);
             System.out.println("A[" + left + "] = " + A[left] + ", result = " + result);
-            if (left <= result -1 && Math.abs(A[left] + A[result-1]) < bestSum) {
+            if (left < result -1 && Math.abs(A[left] + A[result-1]) < bestSum) {
                 bestSum = Math.abs(A[left] + A[result-1]);
                 value1 = A[left];
                 value2 = A[result-1];
@@ -62,17 +68,16 @@ public class Main_Baekjoon_2470_두용액 {
         System.out.println(sb);
     }
 
-    private static int binarySearch(int number) {
-        int left = 0;
-        int right = N-1;
+    private static int binarySearch(int L, int R, int number) {
+
         int result = N;
-        while (left <= right) {
-            int middle = (left + right) / 2;
-            if (A[middle] >= number) {
-                right = middle - 1;
-                result = middle;
+        while (L <= R) {
+            int M = (L + R) / 2;
+            if (A[M] >= number) {
+                R = M - 1;
+                result = M;
             } else {
-                left = middle + 1;
+                L = M + 1;
             }
         }
 

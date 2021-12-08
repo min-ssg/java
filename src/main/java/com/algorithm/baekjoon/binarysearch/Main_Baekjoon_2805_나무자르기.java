@@ -11,6 +11,7 @@ public class Main_Baekjoon_2805_나무자르기 {
 
     static int N,M; // 1<=N<=1_000_000, 1<=M<=2_000_000_000
     static int[] A; // Array
+    static int MAX = Integer.MIN_VALUE;
 
     public static void main(String[] args) {
         input();
@@ -26,9 +27,12 @@ public class Main_Baekjoon_2805_나무자르기 {
         }
     }
 
+    /**
+     * 결정문제를 해결하는 방법.
+     */
     private static boolean determination(int height) {
         // height로 나무들을 잘랐을 때, M만큼 얻을 수 있다면 true, 없으면 false를 return
-        long sum = 0;
+        long sum = 0; // 자연스럽게 여기 int를 사용하면 안됨.
         for (int i = 0; i < N; i++) {
             if (A[i] > height) {
                 sum += A[i] - height;
@@ -39,7 +43,7 @@ public class Main_Baekjoon_2805_나무자르기 {
 
     private static void solution() {
         long left = 0;
-        long right = 2_000_000_000; // 20억
+        long right = A[N-1]; // 20억
         long answer = 0;
 
         while (left <= right) {

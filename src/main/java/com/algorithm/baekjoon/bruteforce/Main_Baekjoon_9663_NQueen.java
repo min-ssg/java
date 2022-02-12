@@ -28,7 +28,7 @@ public class Main_Baekjoon_9663_NQueen {
         for (int candidate = 1; candidate <= N; candidate++) {
             // row 행의 c열에 놓을 수 있는지 확인
             boolean isPossible = true;
-            for (int i = 1; i <= row-1; i++) {
+            for (int i = 1; i <= row-1; i++) { // 현재 행에서 보다 위로 퀸을 놓을 수 있는가?를  check
                 // (i, col[i])
                 if (attackable(row, candidate, i, col[i])) {
                     isPossible = false;

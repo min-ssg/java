@@ -76,7 +76,7 @@ class Solution2529 {
         this.sign = sign;
         selected = new char[k+1];
 
-        recurrentFunction(0);
+        recurrentFunction2(0);
         System.out.println(LPAD(max, k+1));
         System.out.println(LPAD(min, k+1));
     }
@@ -118,15 +118,42 @@ class Solution2529 {
         }
     }
 
-    private boolean validation() {
-        for (int i = 0; i < K; i++) {
-            if (sign[i] == '<' && !(selected[i] < selected[i+1])) {
-                return false;
-            }
+    private void recurrentFunction2(int k) {
 
-            if (sign[i] == '>' && !(selected[i] > selected[i+1])) {
-                return false;
+        if (k == K+1) {
+            long value = getValue();
+            max = Math.max(max, value);
+            min = Math.min(min, value);
+            return;
+        }
+
+        for (int i = 0; i < 10; i++) {
+            if (used[i]) continue;
+
+            if (validation(k, i)) {
+                selected[k] = (char)(i + '0');
+                used[i] = true;
+                recurrentFunction2(k+1);
+                selected[k] = ' ';
+                used[i] = false;
             }
+        }
+    }
+
+    private boolean validation() {
+        return false;
+    }
+
+    private boolean validation(int k, int i) {
+
+        if (k == 0) return true;
+
+        if (sign[k-1] == '<' && !(selected[k-1] < i + '0')) {
+            return false;
+        }
+
+        if (sign[k-1] == '>' && !(selected[k-1] > i + '0')) {
+            return false;
         }
 
         return true;

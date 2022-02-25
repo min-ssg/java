@@ -3,14 +3,8 @@ package com.algorithm.baekjoon.dp;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
-/**
- * dp문제이지만, priorityQueue로 해보려 한다.
- */
 public class Main_Baekjoon_11066_파일합치기 {
 
     public static void main(String[] args) {
@@ -71,7 +65,7 @@ class Solution11066 {
 
         for (int len = 2; len <= k; len++) {
             for (int i = 1; i <= k-len+1; i++) { // i 시작점, j 끝점
-                int j = i + len - 1;
+                int j = i + len - 1; // 끝점 구하기
 
                 dp[i][j] = Integer.MAX_VALUE;
 

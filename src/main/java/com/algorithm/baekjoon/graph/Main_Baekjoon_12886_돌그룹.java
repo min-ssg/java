@@ -47,8 +47,8 @@ public class Main_Baekjoon_12886_돌그룹 {
 class Solution12886 {
 
     private int sum, target;
-    private boolean[][] visited = new boolean[1001][1001];
-
+    private boolean[][] visited = new boolean[1500][1500];
+    private int X,Y;
     Queue<Node> queue = new LinkedList<>();
 
     public int solve(int a, int b, int c) {
@@ -59,19 +59,37 @@ class Solution12886 {
         }
 
         target = sum / 3;
-        System.out.println("Target = " + target);
 
-        if (a == target || b == target || c == target) return 1;
+        if (a == target && b == target && c == target) return 1;
 
-        return bfs(a,b);
+        return bfs(a,b, c);
     }
 
-    private int bfs(int a, int b) {
+    private int bfs(int a, int b, int c) {
 
         if (a < b) {
+            visited[a][b] = true;
             queue.add(new Node(a, b));
-        } else {
+        } else if (a > b){
+            visited[b][a] = true;
             queue.add(new Node(b, a));
+        }
+
+        if (a < c) {
+            visited[a][c] = true;
+            queue.add(new Node(a, c));
+        } else if (a > c) {
+            visited[c][a] = true;
+            queue.add(new Node(c, a));
+        }
+
+
+        if (b < c) {
+            visited[b][c] = true;
+            queue.add(new Node(b, c));
+        } else if (b > c) {
+            visited[c][b] = true;
+            queue.add(new Node(c, b));
         }
 
         while (!queue.isEmpty()) {
@@ -79,19 +97,24 @@ class Solution12886 {
 
             int x = node.x;
             int y = node.y;
+            int z = sum - (x + y);
 
-            if (x == target || y == target) return 1;
+            if (x == target && y == target && z == target) return 1;
 
-            if (x == y) {
-                int c = sum - (x + y);
-                if (x < c) {
-                    nextNode(x,c);
+            if (x == y) continue;
+
+            if (x == target || y == target) {
+                int nx = sum - (x + y);
+                int ny = (x + y) - target;
+                if (nx < ny) {
+                    x = nx;
+                    y = ny;
                 } else {
-                    nextNode(c,x);
+                    x = ny;
+                    y = nx;
                 }
-
-                continue;
             }
+
             nextNode(x,y);
         }
 
@@ -101,16 +124,42 @@ class Solution12886 {
     private void nextNode(int x, int y) {
         int nextX = x * 2;
         int nextY = y - x;
+        int c = sum - (nextX + nextY);
 
-        System.out.println("(" + nextX + "," + nextY + ")");
         if (nextX < nextY) {
-            if (visited[nextX][nextY]) return;
-            visited[nextX][nextY] = true;
-            queue.add(new Node(nextX, nextY));
+            if (!visited[nextX][nextY]) {
+                visited[nextX][nextY] = true;
+                queue.add(new Node(nextX, nextY));
+            }
         } else {
-            if (visited[nextY][nextX]) return;
-            visited[nextY][nextX] = true;
-            queue.add(new Node(nextY,nextX));
+            if (!visited[nextY][nextX]) {
+                visited[nextY][nextX] = true;
+                queue.add(new Node(nextY,nextX));
+            }
+        }
+
+        if (nextX < c) {
+            if (!visited[nextX][c]) {
+                visited[nextX][c] = true;
+                queue.add(new Node(nextX, c));
+            }
+        } else {
+            if (!visited[c][nextX]) {
+                visited[c][nextX] = true;
+                queue.add(new Node(c, nextX));
+            }
+        }
+
+        if (nextY < c) {
+            if (!visited[nextY][c]) {
+                visited[nextY][c] = true;
+                queue.add(new Node(nextY, c));
+            }
+        } else {
+            if (!visited[c][nextY]) {
+                visited[c][nextY] = true;
+                queue.add(new Node(c, nextY));
+            }
         }
     }
 

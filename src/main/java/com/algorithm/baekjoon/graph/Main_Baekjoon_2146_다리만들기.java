@@ -116,9 +116,12 @@ class Solution2146 {
                 if (x + dx[i] < 0 || x + dx[i] >= N
                 ||  y + dy[i] < 0 || y + dy[i] >= N) continue;
 
+                // 현재 island의 value 이면 패스
                 if (island[x + dx[i]][y + dy[i]] == value) continue;
+                // 이미 방문했다면 패스
                 if (visited[x + dx[i]][y + dy[i]]) continue;
 
+                // 이제 바다가 아닌 새로운 섬을 방문했다면 distance 반환.
                 if (island[x + dx[i]][y + dy[i]] != 0 && island[x + dx[i]][y + dy[i]] != value) {
                     return distance;
                 }

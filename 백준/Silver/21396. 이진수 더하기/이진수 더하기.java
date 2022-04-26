@@ -66,15 +66,12 @@ class Solution21396 {
             if (map.containsKey(vv)) {
                 count += map.get(vv);
             }
-             
 
-                if (!map.containsKey(v[i])) {
-                    map.put(v[i], 1);
-                } else {
-                    map.replace(v[i], map.get(v[i]) + 1);
-                }
-            
-
+            if (!map.containsKey(v[i])) {
+                map.put(v[i], 1);
+            } else {
+                map.replace(v[i], map.get(v[i]) + 1);
+            }
         }
 
         return count;

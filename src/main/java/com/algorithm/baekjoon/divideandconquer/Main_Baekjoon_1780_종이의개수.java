@@ -1,0 +1,118 @@
+package com.algorithm.baekjoon.divideandconquer;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.util.StringTokenizer;
+
+public class Main_Baekjoon_1780_종이의개수 {
+    public static void main(String[] args) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
+            FastReader scan = new FastReader(br);
+
+            int N = scan.nextInt();
+            int[][] map = new int[N][N];
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < N; j++) {
+                    map[i][j] = scan.nextInt();
+                }
+            }
+
+            Solution1780 solution = new Solution1780();
+            solution.solve(N,map);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static class FastReader {
+        private final BufferedReader br;
+        private StringTokenizer st;
+
+        public FastReader(BufferedReader br) {
+            this.br = br;
+        }
+
+        public String nextLine() throws IOException {
+            return br.readLine();
+        }
+
+        public String next() throws IOException {
+            while (st == null || !st.hasMoreElements()) {
+                st = new StringTokenizer(nextLine());
+            }
+            return st.nextToken();
+        }
+
+        public int nextInt() throws IOException {
+            return Integer.parseInt(next());
+        }
+    }
+}
+
+class Solution1780 {
+    StringBuilder sb = new StringBuilder();
+    int[] counts = new int[3];
+    int[][] map;
+
+    public void solve(int n, int[][] map) {
+        this.map = map;
+        Paper start = new Paper(0,0,n);
+        recurrentFunction(start);
+
+        for (int count : counts) {
+            sb.append(count).append('\n');
+        }
+
+        System.out.println(sb.toString());
+    }
+
+    private void recurrentFunction(Paper paper) {
+        if (isDifferent(paper)) {
+            int x = paper.x;
+            int y = paper.y;
+            int divideBy3 = paper.size / 3;
+
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    recurrentFunction(new Paper(x + divideBy3 * i, y + divideBy3 * j, divideBy3));
+                }
+            }
+            return;
+        }
+
+        int type = map[paper.x][paper.y] + 1;
+        counts[type] += 1;
+    }
+
+    private boolean isDifferent(Paper paper) {
+        int x = paper.x;
+        int y = paper.y;
+        int size = paper.size;
+        int first = map[x][y];
+
+        for (int i = x; i < x + size; i++) {
+            for (int j = y; j < y + size; j++) {
+                if (first != map[i][j]) return true;
+            }
+        }
+
+        return false;
+    }
+
+    private class Paper {
+        int x;
+        int y ;
+        int size;
+        public Paper(int x, int y, int size) {
+            this.x = x;
+            this.y = y;
+            this.size = size;
+        }
+
+        @Override
+        public String toString() {
+            return x + "," + y + " = " + size;
+        }
+    }
+}

@@ -2,25 +2,27 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class Main {
     public static void main(String[] args) {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
             FastReader scan = new FastReader(br);
-            int N = scan.nextInt(); // 도시의 개수
+
+            int N = scan.nextInt();
             int M = scan.nextInt();
 
-            int[][] inputs = new int[M][3]; // start end weight;
+            int[][] inputs = new int[M][3];
             for (int i = 0; i < M; i++) {
                 for (int j = 0; j < 3; j++) {
                     inputs[i][j] = scan.nextInt();
                 }
             }
-            int start = scan.nextInt();
-            int end = scan.nextInt();
+            int A = scan.nextInt();
+            int B = scan.nextInt();
 
-            Solution1916 solution = new Solution1916();
-            int answer = solution.solve(N,M,inputs,start,end);
+            Solution1916_2 solution = new Solution1916_2();
+            int answer = solution.solve(N, M, inputs, A, B);
             System.out.println(answer);
         } catch (IOException e) {
             e.printStackTrace();
@@ -48,65 +50,87 @@ public class Main {
     }
 }
 
-class Solution1916 {
+class Solution1916_2 {
 
-    private int[] COST;
+    Map<Node, List<Edge>> graph = new HashMap<>();
 
-    public int solve(int n, int m, int[][] inputs, int start, int end) {
+    public int solve(int n, int m, int[][] inputs, int a, int b) {
+        Node[] nodes = new Node[n + 1];
+        IntStream.rangeClosed(1,n).forEach(i -> nodes[i] = new Node(i));
 
-        List<Point>[] graph = new ArrayList[n + 1];
-
-        for (int i = 1; i <= n; i++) {
-            graph[i] = new ArrayList<>();
-        }
-
-        for (int[] input: inputs) {
-            int s = input[0];
-            int e = input[1];
-            int w = input[2];
-
-            graph[s].add(new Point(e, w));
-        }
-
-        this.COST = new int[n + 1];
-        Arrays.fill(COST, Integer.MAX_VALUE);
-        COST[start] = 0;
-
-        PriorityQueue<Point> pq = new PriorityQueue<>();
-        pq.add(new Point(start, 0));
-
-        while (!pq.isEmpty()) {
-            Point point = pq.poll();
-            int target = point.end;
-            int cost = point.cost;
-
-            // 최단거리가 아닌 경우 PASS
-            if (COST[target] < cost) continue;
-            for (Point adjacent : graph[target]) {
-                int next = adjacent.end;
-                int nextCost = cost + adjacent.cost;
-                if (nextCost < COST[next]) {
-                    COST[next] = nextCost;
-                    pq.add(new Point(next, nextCost));
-                }
+        // graph 완성하기.
+        for (int[] input : inputs) {
+            if (!graph.containsKey(nodes[input[0]])) {
+                graph.put(nodes[input[0]], new ArrayList<>());
             }
+            graph.get(nodes[input[0]]).add(new Edge(nodes[input[1]], input[2]));
         }
 
-        return COST[end];
+        return dijkstra(n, nodes[a], nodes[b]);
     }
 
-    private class Point implements Comparable<Point> {
-        int end;
+    private int dijkstra(int n, Node a, Node b) {
+
+        int[] COST = new int[n + 1];
+        Arrays.fill(COST, Integer.MAX_VALUE);
+        //PriorityQueue<Edge> pq = new PriorityQueue<>(graph.get(a));
+        PriorityQueue<Edge> pq = new PriorityQueue<>();
+        pq.add(new Edge(a, 0));
+        COST[a.index] = 0;
+        //graph.get(a).forEach(edge -> COST[edge.node.index] = edge.cost);
+
+        while (!pq.isEmpty()) {
+            Edge edge = pq.poll();
+            Node node = edge.node;
+            int cost = edge.cost;
+
+            if (node == b) break;
+            if (COST[node.index] < cost) continue;
+            if (graph.get(node) == null) continue;
+            for (Edge nextEdge : graph.get(node)) {
+                Node nextNode = nextEdge.node;
+                int nextCost = nextEdge.cost;
+
+                if (COST[nextNode.index] > cost + nextCost) {
+                    COST[nextNode.index] = cost + nextCost;
+                    pq.add(new Edge(nextNode, cost + nextCost));
+                }
+            };
+        }
+
+        return COST[b.index];
+    }
+
+    private class Node {
+        int index;
+
+        public Node (int index) {
+            this.index = index;
+        }
+
+//        @Override
+//        public String toString() {
+//            return String.valueOf(index);
+//        }
+    }
+
+    private class Edge implements Comparable<Edge> {
+        Node node;
         int cost;
 
-        Point(int end, int cost) {
-            this.end = end;
+        public Edge(Node node, int cost) {
+            this.node = node;
             this.cost = cost;
         }
 
         @Override
-        public int compareTo(Point other) {
+        public int compareTo(Edge other) {
             return Integer.compare(this.cost, other.cost);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("[%s,%s]",node, cost);
         }
     }
 }
